@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import os
 import json
 
 from collections import Counter
@@ -9,42 +8,7 @@ from boltons import jsonutils
 _MISSING = object()
 
 DEFAULT_FLUSH_INTERVAL = 1
-DEFAULT_FILE_PATH = os.path.abspath('./import_analytics.jsonl')
 DEFAULT_SEP = '$'  # '$' is valid in sqlite column names without escaping
-
-
-# known weakness of the path approach is that the dictionaries cannot
-# have string keys containing just integers
-def parse_path(path, sep=DEFAULT_SEP):
-    try:
-        path_segs = path.split(sep)
-    except:
-        raise TypeError('expected string, not %r' % path)
-    ret = []
-    for p in path_segs:
-        p = p.strip()
-        if not p:
-            continue
-        try:
-            ret.append(int(p))
-        except ValueError:
-            ret.append(p)
-    return ret
-
-
-def get_path(target, path, default=_MISSING, sep=DEFAULT_SEP):
-    if isinstance(path, basestring):
-        path = parse_path(path)
-    cur = target
-    for p in path:
-        try:
-            cur = cur[p]
-        except (IndexError, KeyError, TypeError):
-            if default is not _MISSING:
-                return default
-            raise KeyError('error retrieving segment %r of path %r'
-                           % (p, path))
-    return cur
 
 
 class LineDAL(object):
@@ -98,3 +62,37 @@ class LineDAL(object):
         ret['record_count'] = i - 1
         ret['grouped_by'] = group_by
         return ret
+
+
+# known weakness of the path approach is that the dictionaries cannot
+# have string keys containing just integers
+def parse_path(path, sep=DEFAULT_SEP):
+    try:
+        path_segs = path.split(sep)
+    except:
+        raise TypeError('expected string, not %r' % path)
+    ret = []
+    for p in path_segs:
+        p = p.strip()
+        if not p:
+            continue
+        try:
+            ret.append(int(p))
+        except ValueError:
+            ret.append(p)
+    return ret
+
+
+def get_path(target, path, default=_MISSING, sep=DEFAULT_SEP):
+    if isinstance(path, basestring):
+        path = parse_path(path)
+    cur = target
+    for p in path:
+        try:
+            cur = cur[p]
+        except (IndexError, KeyError, TypeError):
+            if default is not _MISSING:
+                return default
+            raise KeyError('error retrieving segment %r of path %r'
+                           % (p, path))
+    return cur
