@@ -16,7 +16,7 @@ from boltons import jsonutils
 
 _MISSING = object()
 
-DEFAULT_FLUSH_INTERVAL = 1
+DEFAULT_FLUSH_INTERVAL = 1  # write to disk on every new record
 DEFAULT_SEP = '$'  # '$' is valid in sqlite column names without escaping
 
 
@@ -40,7 +40,7 @@ class LineDAL(object):
     def raw_query(self, query):
         raise NotImplementedError('JSONL DAL does not support raw queries')
 
-    def select_records(self, limit=None, group_by=None, raw_query=None):
+    def select_records(self, limit=None, group_by=None):
         ret = {}
         ret['counts'] = counts = Counter()
         reverse = True
