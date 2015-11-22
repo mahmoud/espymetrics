@@ -1,8 +1,7 @@
 EspyMetrics: Project Design
 ===========================
 
-**Summary**: EspyMetrics is a SQLite-backed analytcs server built to
- demonstrate certain Python best practices.
+**Summary**: EspyMetrics is a pure-Python analytcs server built to track Python usage patterns, as well as demonstrate key Python best practices.
 
 .. contents::
    :depth: 2
