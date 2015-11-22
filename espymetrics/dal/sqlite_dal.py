@@ -83,7 +83,24 @@ class SQLiteDAL(object):
         pass
 
     def select_records(self, limit=None, group_by=None):
-        pass
+        ret = {'counts': {}}
+        if not group_by:
+            return {}
+        group_by = group_by.replace('.', '$')
+        query = 'SELECT ROWID, ' + group_by + ', COUNT(*) FROM ' + TABLE_NAME
+        query += ' GROUP BY ' + str(group_by)
+        if limit:
+            query += ' ORDER BY ROWID DESC LIMIT ' + str(limit)
+
+        conn = sqlite3.connect(self.file_path)
+        rows = conn.execute(query).fetchall()
+        for _, group_key, group_count in rows:
+            ret['counts'][group_key] = group_count
+
+        ret['grouped_by'] = group_by
+        ret['grouped_key_count'] = len(rows)
+        ret['record_count'] = sum(ret['counts'].values())
+        return ret
 
 
 if __name__ == '__main__':
