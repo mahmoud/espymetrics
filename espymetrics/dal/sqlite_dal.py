@@ -40,6 +40,8 @@ sqlite3.enable_callback_tracebacks(True)
 class SQLiteDAL(object):
     _extension = '.db'
 
+    __file_path = None
+
     def __init__(self, file_path):
         self.__file_path = file_path
 
