@@ -15,10 +15,11 @@ Drawbacks:
 * More complex - More logic = more work = more time/resources?
 """
 
+import os
 import sqlite3
 
+import boltons
 
-_MISSING = object()
 SEP = '$'  # '$' is valid in sqlite column names, no escaping required
 
 TABLE_NAME = 'on_import_data'
@@ -31,12 +32,16 @@ CREATE_TABLE = ('CREATE TABLE IF NOT EXISTS ' + TABLE_NAME +
                 'uname$0, uname$1, uname$2, uname$3, uname$4, uname$5, ' +
                 'username, uuid)')
 
+total_count = 0
+
+sqlite3.enable_callback_tracebacks(True)
+
 
 class SQLiteDAL(object):
     _extension = '.db'
 
     def __init__(self, file_path):
-        self.file_path = file_path
+        self.__file_path = file_path
 
         conn = sqlite3.connect(file_path)
         conn.execute(CREATE_TABLE)
@@ -72,28 +77,42 @@ class SQLiteDAL(object):
         query += '"' + in_dict['uuid']
         query += '")'
 
-        conn = sqlite3.connect(self.file_path)
-        conn.isolation_level = None  # autocommit
-        print repr(query)
-        conn.execute(query)
-        conn.close()
+        try:
+            conn = sqlite3.connect(self.__file_path)
+            conn.isolation_level = None  # autocommit
+            conn.execute(query)
+            conn.close()
+        except:
+            pass
+
+        global total_count
+        total_count += 1
         return
 
     def raw_query(self, query):
-        pass
+        try:
+            conn = sqlite3.connect(self.__file_path)
+            rows = conn.execute(query).fetchall()
+            return rows
+        except:
+            return -1
 
     def select_records(self, limit=None, group_by=None):
-        ret = {'counts': {}}
+        ret = {}
         if not group_by:
-            return {}
+            return ret
         group_by = group_by.replace('.', '$')
         query = 'SELECT ROWID, ' + group_by + ', COUNT(*) FROM ' + TABLE_NAME
         query += ' GROUP BY ' + str(group_by)
         if limit:
             query += ' ORDER BY ROWID DESC LIMIT ' + str(limit)
 
-        conn = sqlite3.connect(self.file_path)
-        rows = conn.execute(query).fetchall()
+        try:
+            conn = sqlite3.connect(self.__file_path)
+            rows = conn.execute(query).fetchall()
+        except:
+            return
+        ret['counts'] = {}
         for _, group_key, group_count in rows:
             ret['counts'][group_key] = group_count
 
