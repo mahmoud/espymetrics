@@ -23,14 +23,13 @@ SEP = '$'  # '$' is valid in sqlite column names, no escaping required
 
 TABLE_NAME = 'on_import_data'
 CREATE_TABLE = ('CREATE TABLE IF NOT EXISTS ' + TABLE_NAME +
-                '(id integer primary key, ' +
+                '(id integer primary key asc, ' +
                 'hostfqdn, hostname, python$argv, python$bin, ' +
                 'python$build_date, python$compiler, python$have_readline, ' +
                 'python$have_ucs4, python$is_64bit, python$version, python$version_full, ' +
-                'time$epoch real, time$std_utc_offset real, ' +
+                'time$utc_epoch real, time$std_utc_offset real, ' +
                 'uname$0, uname$1, uname$2, uname$3, uname$4, uname$5, ' +
                 'username, uuid)')
-
 
 
 class SQLiteDAL(object):
@@ -43,7 +42,42 @@ class SQLiteDAL(object):
         conn.execute(CREATE_TABLE)
 
     def add_record(self, in_dict):
-        pass
+        query = ('INSERT INTO ' + TABLE_NAME +
+                 ' (hostfqdn, hostname, python$argv, python$bin, ' +
+                 'python$build_date, python$compiler, python$have_readline, ' +
+                 'python$have_ucs4, python$is_64bit, python$version, python$version_full, ' +
+                 'time$utc_epoch, time$std_utc_offset, ' +
+                 'uname$0, uname$1, uname$2, uname$3, uname$4, uname$5, ' +
+                 'username, uuid) VALUES (')
+        query += '"' + in_dict['hostfqdn'] + '", '
+        query += '"' + in_dict['hostname'] + '", '
+        query += '"' + in_dict['python']['argv'] + '", '
+        query += '"' + in_dict['python']['bin'] + '", '
+        query += '"' + in_dict['python']['build_date'] + '", '
+        query += '"' + in_dict['python']['compiler'] + '", '
+        query += '"' + str(in_dict['python']['have_readline'])[0] + '", '
+        query += '"' + str(in_dict['python']['have_ucs4'])[0] + '", '
+        query += '"' + str(in_dict['python']['is_64bit'])[0] + '", '
+        query += '"' + in_dict['python']['version'] + '", '
+        query += '"' + in_dict['python']['version_full'] + '", '
+        query += '"' + str(in_dict['time']['utc_epoch']) + '", '
+        query += '"' + str(in_dict['time']['std_utc_offset']) + '", '
+        query += '"' + in_dict['uname'][0] + '", '
+        query += '"' + in_dict['uname'][1] + '", '
+        query += '"' + in_dict['uname'][2] + '", '
+        query += '"' + in_dict['uname'][3] + '", '
+        query += '"' + in_dict['uname'][4] + '", '
+        query += '"' + in_dict['uname'][5] + '", '
+        query += '"' + in_dict['username'] + '", '
+        query += '"' + in_dict['uuid']
+        query += '")'
+
+        conn = sqlite3.connect(self.file_path)
+        conn.isolation_level = None  # autocommit
+        print repr(query)
+        conn.execute(query)
+        conn.close()
+        return
 
     def raw_query(self, query):
         pass

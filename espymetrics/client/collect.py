@@ -29,16 +29,20 @@ except:
 HAVE_UCS4 = getattr(sys, 'maxunicode', 0) > 65536
 
 
-TIME_INFO = {'utc': str(datetime.datetime.utcnow()),
+TIME_INFO = {'utc_epoch': str(datetime.datetime.utcnow()),
              'std_utc_offset': -time.timezone / 3600.0}
 
 
 def get_python_info():
     ret = {}
-    ret['argv'] = sys.argv
+    ret['argv'] = ' \t '.join(sys.argv)
     ret['bin'] = sys.executable
     ret['is_64bit'] = IS_64BIT
-    ret['version'] = sys.version
+    try:
+        ret['version'] = sys.version.split()[0]
+    except:
+        ret['version'] = ''
+    ret['version_full'] = sys.version
     ret['compiler'] = platform.python_compiler()
     ret['build_date'] = platform.python_build()[1]
     ret['version_info'] = list(sys.version_info)

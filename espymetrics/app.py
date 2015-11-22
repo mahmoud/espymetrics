@@ -9,7 +9,7 @@ from clastic import Application, Middleware, render_basic, MetaApplication
 from clastic.errors import BadRequest
 from clastic.middleware import GetParamMiddleware
 
-from dal import LineDAL
+from dal import LineDAL, SQLiteDAL
 
 
 PORT = 8888
@@ -24,7 +24,7 @@ def main():
     opts, _ = prs.parse_known_args()
     debug = opts.debug
 
-    v1_app = create_v1_app()
+    v1_app = create_v1_app('sql')
     app = Application([('/v1', v1_app)])
     meta_app = MetaApplication()
     if debug:
@@ -39,7 +39,7 @@ def create_v1_app(dal_name=DEFAULT_DAL, file_path=None):
     if dal_name == 'line':
         dal_type = LineDAL
     elif dal_name == 'sql':
-        pass
+        dal_type = SQLiteDAL
     else:
         raise ValueError('unrecognized DAL name: %r' % dal_name)
 
