@@ -1,0 +1,23 @@
+
+
+MESSAGE_PROTO = {u'hostfqdn': u'feldspar',
+                 u'hostname': u'feldspar',
+                 u'python': {u'argv': u'collect.py',
+                             u'bin': u'/usr/bin/python',
+                             u'build_date': u'Mar 22 2014 22:59:56',
+                             u'compiler': u'GCC 4.8.2',
+                             u'have_readline': True,
+                             u'have_ucs4': True,
+                             u'is_64bit': True,
+                             u'version': u'2.7.6',
+                             u'version_full': u'2.7.6 (default, Mar 22 2014, 22:59:56) [GCC 4.8.2]'},
+                 u'time': {u'epoch': 1407542833.75788,
+                           u'std_utc_offset': -8.0},
+                 u'uname': [u'Linux',
+                            u'feldspar',
+                            u'3.13.0-30-generic',
+                            u'#54-Ubuntu SMP Mon Jun 9 22:45:01 UTC 2014',
+                            u'x86_64',
+                            u'x86_64'],
+                 u'username': u'mahmoud',
+                 u'uuid': u'0dedaf4b-4581-480a-ad36-79d3b4c0fe8f'}
