@@ -18,6 +18,23 @@ DEFAULT_DAL = 'line'
 DEFAULT_PREFIX = 'metrics_data'
 
 
+def main():
+    prs = argparse.ArgumentParser()
+    prs.add_argument('--debug', action='store_true')
+    opts, _ = prs.parse_known_args()
+    debug = opts.debug
+
+    v1_app = create_v1_app()
+    app = Application([('/v1', v1_app)])
+    meta_app = MetaApplication()
+    if debug:
+        app.add(('/', meta_app))
+
+    app.serve(port=PORT, threaded=True)
+
+    return
+
+
 def create_v1_app(dal_name=DEFAULT_DAL, file_path=None):
     if dal_name == 'line':
         dal_type = LineDAL
@@ -39,23 +56,6 @@ def create_v1_app(dal_name=DEFAULT_DAL, file_path=None):
                         ('/download/import', get_import_data, render_basic)],
                        resources={'data_store': data_store},
                        middlewares=[gpm, rdm])
-
-
-def main():
-    prs = argparse.ArgumentParser()
-    prs.add_argument('--debug', action='store_true')
-    opts, _ = prs.parse_known_args()
-    debug = opts.debug
-
-    v1_app = create_v1_app()
-    app = Application([('/v1', v1_app)])
-    meta_app = MetaApplication()
-    if debug:
-        app.add(('/', meta_app))
-
-    app.serve(port=PORT, threaded=True)
-
-    return
 
 
 class RequestDataMiddleware(Middleware):

@@ -1,4 +1,13 @@
 # -*- coding: utf-8 -*-
+"""The line-based DAL writes one text line per record to a
+UTF-8-encoded file of your choosing. Each line is a JSON object, per
+the JSON Lines spec: http://jsonlines.org/
+
+The advantages are simplicity and scalability of writes (append-only
+to the end of a text file). The drawbacks are limits in terms
+of query language, storage efficiency, and data load speeds.
+"""
+
 
 import json
 
