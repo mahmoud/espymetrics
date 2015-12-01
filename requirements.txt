@@ -1,0 +1,3 @@
+boltons==15.1.1
+clastic==0.4.3
+Werkzeug==0.9.4
