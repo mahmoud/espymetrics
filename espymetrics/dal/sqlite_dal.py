@@ -14,10 +14,22 @@ Drawbacks:
 * Not human readable - Binary format makes it harder to read/grep
 * More complex - More logic = more work = more time/resources?
 
+About this implementation
+-------------------------
+
+This implementation uses sqlite3 directly, but could arguably benefit
+from usage of an ORM-like system. Most ORMs can have a lot of negative
+side effects when working on large projects or with large teams, a la
+unexpected generated SQL output. That said, in my experience,
+SQLAlchemy's expression language is pretty enterprise-ready. Still,
+raw SQL here for simplicity.
+
 """
 
 import sqlite3
 from boltons.iterutils import remap, get_path
+# further reading: http://sedimental.org/remap.html
+
 
 _MISSING = object()
 SEP = '$'  # '$' is valid in sqlite column names, no escaping required
@@ -47,6 +59,7 @@ def flatten_fields(msg_proto, **kwargs):
         ret.append((full_path, full_path_str, col_type))
         return True
 
+    # read more about remap here: http://sedimental.org/remap.html
     remap(msg_proto, visit=visit)
     return sorted(ret, key=lambda x: x[0])
 

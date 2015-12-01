@@ -91,10 +91,11 @@ service.
 Service). Restoration of EspyMetrics logging is internal and automatic,
 requiring no operations action.
 
-Code dependencies
-~~~~~~~~~~~~~~~~~
+Libraries
+~~~~~~~~~
 
-EspyMetrics supports Python 2.7.3+ and packages all of its libraries.
+In production, EspyMetrics packages all of its libraries. For
+development, see requirements.txt. EspyMetrics is tested on CPython 2.7.6.
 
 Architecture
 ------------
