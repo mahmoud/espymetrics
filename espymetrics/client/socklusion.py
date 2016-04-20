@@ -23,7 +23,7 @@ def get_opt_map(values_obj):
 
 def parse_args():
     prs = optparse.OptionParser()
-    prs.add_option('--host')
+    prs.add_option('--host', default='127.0.0.1')
     prs.add_option('--port', type=int)
     prs.add_option('--wrap-ssl', action='store_true')
     prs.add_option('--timeout')
@@ -37,7 +37,11 @@ def parse_args():
 
 
 def get_data():
-    return sys.stdin.read()
+    "get bytes of stdin"
+    try:
+        return sys.stdin.buffer.read()  # python 3
+    except AttributeError:
+        return sys.stdin.read()  # python 2
 
 
 def send_data_child(data,
@@ -122,9 +126,9 @@ def main():
         #kwargs['want_response'] = True  # TODO
         stdout, stderr = send_data(data, **kwargs)
         if stdout:
-            print stdout
+            print(stdout)
         if stderr:
-            print 'stderr:', stderr
+            print('stderr:', stderr)
 
 
 if __name__ == '__main__':
