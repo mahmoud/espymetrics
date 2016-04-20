@@ -22,6 +22,8 @@ setup(
     author_email=CONTACT,
     url=URL,
     packages=find_packages(),
+    install_requires=['boltons>=16.2.0',
+                      'clastic==0.4.3'],
     include_package_data=True,
     classifiers=['Intended Audience :: Developers',
                  'Programming Language :: Python :: 2.6',
